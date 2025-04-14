@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <title>Scuba Quiz</title>
+    <style>
+        body { font-family: sans-serif; background: #eef; padding: 20px; }
+        .question { margin-bottom: 20px; }
+        button { margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Scuba Quiz</h1>
+    <h2>Scuba Trainer Test</h2>
+    <p>Wie viele Fragen möchtest du spielen?</p>
+    <button onclick="startQuiz(5)">5</button>
+    <button onclick="startQuiz(10)">10</button>
+    <button onclick="startQuiz(20)">20</button>
+    <button onclick="startQuiz(60)">60</button>
+    <button onclick="startQuiz(120)">Alle</button>
+    <div id="quiz"></div>
+    <button id="submit-btn" style="display:none;" onclick="evaluate()">Auswerten</button>
+    <script>
+        const questions = [];
+        
+        function startQuiz(count) {
+            const quizDiv = document.getElementById('quiz');
+            const submitBtn = document.getElementById('submit-btn');
+            quizDiv.innerHTML = '';
+            submitBtn.style.display = "none";
+            const selected = shuffle(questions).slice(0, count);
+            selected.forEach((q, i) => {
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.innerHTML = `<strong>${i + 1}. ${q.frage}</strong><br>` +
+                    q.antworten.map((a, j) => `<label><input type="radio" name="q${i}" value="${j}"> ${a}</label><br>`).join('');
+                quizDiv.appendChild(div);
+            });
+            submitBtn.style.display = "inline-block";
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function evaluate() {
+            const questionsShown = document.querySelectorAll('.question');
+            let correct = 0;
+            questionsShown.forEach((q, i) => {
+                const selected = q.querySelector('input[type="radio"]:checked');
+                if (selected) correct++;
+            });
+            alert(`Du hast ${correct} von ${questionsShown.length} Fragen beantwortet.`);
+        }
+    </script>
+</body>
+</html>
